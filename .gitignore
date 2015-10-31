@@ -229,3 +229,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+Properties/AssemblyInfo.cs
+AI_Assignment_2.csproj
+*.config
