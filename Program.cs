@@ -10,6 +10,12 @@ namespace AI_Assignment_2
     {
         static void Main(string[] args)
         {
+            CityMap map = new CityMap();
+            foreach (City city in map.Cities)
+            {
+                Console.WriteLine(city);
+            }
+            Console.ReadKey();
         }
     }
 }
