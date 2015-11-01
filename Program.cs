@@ -15,6 +15,10 @@ namespace AI_Assignment_2
             {
                 Console.WriteLine(city);
             }
+
+            Route route = new Route(map);
+            route.GenerateFirstRoute();
+            Console.WriteLine(route);
             Console.ReadKey();
         }
     }

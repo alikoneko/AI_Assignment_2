@@ -58,5 +58,13 @@ namespace AI_Assignment_2
                 return cities;
             }
         }
+
+        public int MaxCitites
+        {
+            get
+            {
+                return MAX_CITIES;
+            }
+        }
     }
 }
