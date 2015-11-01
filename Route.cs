@@ -59,6 +59,21 @@ namespace AI_Assignment_2
             CalculateTotalDistance();
         }
 
+        public Dictionary<int, City> OrderVisited
+        {
+            get
+            {
+                return orderVisited;
+            }
+        }
+
+        public double DistanceTraveled
+        {
+            get
+            {
+                return distanceTraveled;
+            }
+        }
         public override string ToString()
         {
             String retString = "";

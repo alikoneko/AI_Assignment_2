@@ -10,15 +10,7 @@ namespace AI_Assignment_2
     {
         static void Main(string[] args)
         {
-            CityMap map = new CityMap();
-            foreach (City city in map.Cities)
-            {
-                Console.WriteLine(city);
-            }
-
-            Route route = new Route(map);
-            route.GenerateFirstRoute();
-            Console.WriteLine(route);
+            SalesmanSolver solve = new SalesmanSolver(20, 10);
             Console.ReadKey();
         }
     }

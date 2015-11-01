@@ -9,7 +9,8 @@ namespace AI_Assignment_2
 {
     class CityMap
     {
-        private float MAX_XY = 1000.0f;
+        //TODO: make cities aware of neighboring cities.
+        private int MAX_XY = 1000;
         private int MAX_CITIES = 100;
         private Random random;
 
@@ -40,7 +41,7 @@ namespace AI_Assignment_2
             {
                 while (true)
                 {
-                    Point point = new Point(random.Next(1000), random.Next(1000));
+                    Point point = new Point(random.Next(MAX_XY), random.Next(MAX_XY));
                     if(!coordinates.Contains(point))
                     {
                         coordinates.Add(point);
