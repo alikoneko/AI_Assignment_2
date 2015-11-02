@@ -10,12 +10,13 @@ namespace AI_Assignment_2
     {
         //TODO: Decide on a kill the dinosaurs method. Comets can be good-bgad
         //constants adjust to taste
-        double TARGET = 20000.0;
         int ELITE_PERCENT = 2;
         int MUTATION_RATE = 10;
+        double TARGET = 20000.0;
         //variables
         CityMap map;
-        Dictionary<Route, int> routes;
+        List<Route> routes;
+        List<Route> bestAllTime;
         int initialPopulation;
         Random random;
         int generations;
@@ -23,12 +24,11 @@ namespace AI_Assignment_2
         public SalesmanSolver(int population, int generations)
         {
             map = new CityMap();
-            routes = new Dictionary<Route, int>();
+            routes = new List<Route>();
+            bestAllTime = new List<Route>();
             this.initialPopulation = population;
             this.generations = generations;
             Initialize();
-            GeneratePopulation();
-            Tournament();
         }
 
         private void Initialize()
@@ -42,52 +42,102 @@ namespace AI_Assignment_2
             {
                 Route route = new Route(map);
                 route.GenerateFirstRoute();
-                int fitness = CalculateFitness(route);
-                routes.Add(route, fitness);
+                routes.Add(route);
             }
-        }
-
-        //higher = closer to target
-        private int CalculateFitness(Route route)
-        {
-            return (int)((TARGET / route.DistanceTraveled) * 100);
         }
 
         private void Tournament()
         {
-            Dictionary<Route, int> sorted = routes.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
-            foreach (KeyValuePair<Route, int> pair in sorted)
+            routes = routes.OrderBy(r => r.DistanceTraveled).ToList();
+            List<Route> top = new List<Route>();
+            if (routes.Count > 200)
             {
-                Console.WriteLine("{0} : {1}", pair.Key.DistanceTraveled, pair.Value);
+                for (int i = 0; i < 100; i++)
+                {
+                    top.Add(routes[i]);
+                }
             }
+            else
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    top.Add(routes[i]);
+                }
+            }
+
+            routes = top;
         }
 
-        private Route Mate(Route father)
+        private void Repopulate()
         {
-            throw new NotImplementedException();
-        }
+            //copy the top 2 -- check
+            //mutate 10% -- check
+            //repopulate with new routes 30% of initial population (try new things!) --check!
+            List<Route> elites = new List<Route>();
+            List<Route> mutants = new List<Route>();
+            routes = routes.OrderBy(r => r.DistanceTraveled).ToList();
+            for (int i = 0; i < ELITE_PERCENT; i++)
+            {
+                elites.Add(routes[i]);
+            }
+            int mutation_count = routes.Count / MUTATION_RATE;
+            for (int i = 0; i < mutation_count; i++)
+            {
+                int rand = random.Next(routes.Count);
+                routes[rand].Mutate();
+            }
 
-        private void Mutate()
-        {
-            throw new NotImplementedException();
-        }
+            foreach (Route route in elites)
+            {
+                if (!bestAllTime.Contains(route))
+                {
+                    bestAllTime.Add(route);
+                }
+                routes.Add(route);
+            }
 
-        private int CrossoverPoint()
-        {
-            throw new NotImplementedException();
-        }
+            bestAllTime = bestAllTime.OrderBy(x => x.DistanceTraveled).ToList();
+            if (bestAllTime.Count > 5)
+            {
+                List<Route> temp = new List<Route>();
+                for (int i = 0; i < 5; i++)
+                {
+                    temp.Add(bestAllTime[i]);
+                }
+                bestAllTime = temp;
+            }
 
+            foreach (Route route in bestAllTime)
+            {
+                routes.Add(route);
+            }
+
+            while (routes.Count < (int)(initialPopulation * 0.30))
+            {
+                Route temp = new Route(map);
+                temp.GenerateFirstRoute();
+                routes.Add(temp);
+            }
+
+        }
+        
         public void Run()
         {
+            GeneratePopulation();
+            for (int i = 0; i < generations; i++)
+            {
+                Tournament();
+                Repopulate();
+            }
+            Tournament();
 
         }
-
         public override string ToString()
         {
             string retString = "";
-            foreach (int fitness in routes.Values.ToList())
+            foreach (Route route in routes)
             {
-                retString += fitness + "\n";
+                retString += route.DistanceTraveled + " : " + TARGET + " \n";
             }
 
             return retString;

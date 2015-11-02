@@ -9,34 +9,16 @@ namespace AI_Assignment_2
     class Route
     {
         private CityMap cities;
-        private double distanceTraveled;
-        private Dictionary<int, City> orderVisited;
+        private int distanceTraveled;
+        private List<City> orderVisited;
         Random random;
 
         public Route(CityMap cities)
         {
             this.cities = cities;
             distanceTraveled = 0;
-            orderVisited = new Dictionary<int, City>();
+            orderVisited = new List<City>();
             Initialize();
-        }
-
-        private void Initialize()
-        {
-            random = ServiceRegistry.GetInstance().GetRandom();
-        }
-
-        private void CalculateTotalDistance()
-        {
-          
-            for (int i = 1; i < orderVisited.Count; i++)
-            {
-                distanceTraveled += Math.Sqrt(Math.Abs((Math.Pow(orderVisited[i].Coordinate.X, 2) - Math.Pow(orderVisited[i-1].Coordinate.X, 2)))
-                    + Math.Abs((Math.Pow(orderVisited[i].Coordinate.Y, 2) - Math.Pow(orderVisited[i-1].Coordinate.Y, 2))));
-            }
-            distanceTraveled += Math.Sqrt(Math.Abs((Math.Pow(orderVisited[orderVisited.Count - 1].Coordinate.X, 2) - Math.Pow(orderVisited[0].Coordinate.X, 2))) + 
-                Math.Abs(Math.Pow(orderVisited[orderVisited.Count - 1].Coordinate.Y, 2) - Math.Pow(orderVisited[0].Coordinate.Y, 2)));
-            
         }
 
         public void GenerateFirstRoute()
@@ -50,20 +32,88 @@ namespace AI_Assignment_2
                     if (!used.Contains(city))
                     {
                         used.Add(city);
-                        orderVisited.Add(i, city);
+                        orderVisited.Add(city);
                         break;
                     }
                 }
+            }
+            if (distanceTraveled != 0)
+            {
+                distanceTraveled = 0;
             }
 
             CalculateTotalDistance();
         }
 
-        public Dictionary<int, City> OrderVisited
+        public void Mutate()
+        {
+            int mutation = random.Next(2);
+            switch (mutation)
+            {
+                case 0:
+                    GenerateFirstRoute();
+                    break;
+                case 1:
+                    int randomNumA = random.Next(cities.MaxCitites);
+                    int randomNumB = random.Next(cities.MaxCitites - 1);
+                    if (randomNumA == randomNumB)
+                    {
+                        randomNumB++;
+                    }
+                    Swap(randomNumA, randomNumB);
+                    randomNumA = random.Next(cities.MaxCitites);
+                    randomNumB = random.Next(cities.MaxCitites - 1); 
+                    if (randomNumA == randomNumB)
+                    {
+                        randomNumB++;
+                    }
+                    Swap(randomNumA, randomNumB);
+                    distanceTraveled = 0;
+                    CalculateTotalDistance();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private int Crossover()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Swap(int a, int b)
+        {
+            City temp = orderVisited[a];
+            orderVisited[a] = orderVisited[b];
+            orderVisited[b] = temp;
+        }
+
+
+        private void Initialize()
+        {
+            random = ServiceRegistry.GetInstance().GetRandom();
+        }
+
+        private void CalculateTotalDistance()
+        {
+
+            for (int i = 1; i < orderVisited.Count; i++)
+            {
+                distanceTraveled += (int)(Math.Sqrt(Math.Abs((Math.Pow(orderVisited[i].Coordinate.X, 2) - Math.Pow(orderVisited[i - 1].Coordinate.X, 2)))
+                    + Math.Abs((Math.Pow(orderVisited[i].Coordinate.Y, 2) - Math.Pow(orderVisited[i - 1].Coordinate.Y, 2)))));
+            }
+            //last back to first
+            distanceTraveled += (int)(Math.Sqrt(Math.Abs((Math.Pow(orderVisited[orderVisited.Count - 1].Coordinate.X, 2) - Math.Pow(orderVisited[0].Coordinate.X, 2))) +
+                Math.Abs(Math.Pow(orderVisited[orderVisited.Count - 1].Coordinate.Y, 2) - Math.Pow(orderVisited[0].Coordinate.Y, 2))));
+
+        }
+
+        //Properties
+        public int Count
         {
             get
             {
-                return orderVisited;
+                return orderVisited.Count;
             }
         }
 
