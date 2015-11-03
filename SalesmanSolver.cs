@@ -20,6 +20,7 @@ namespace AI_Assignment_2
         int initialPopulation;
         Random random;
         int generations;
+        Logger log;
 
         public SalesmanSolver(int population, int generations)
         {
@@ -34,6 +35,7 @@ namespace AI_Assignment_2
         private void Initialize()
         {
             random = ServiceRegistry.GetInstance().GetRandom();
+            log = ServiceRegistry.GetInstance().GetLog();
         }
 
         private void GeneratePopulation()
@@ -44,6 +46,7 @@ namespace AI_Assignment_2
                 route.GenerateFirstRoute();
                 routes.Add(route);
             }
+
         }
 
         private void Tournament()
@@ -80,23 +83,27 @@ namespace AI_Assignment_2
         public void Run()
         {
             GeneratePopulation();
-            foreach (Route route in routes.OrderBy(r => r.DistanceTraveled).ToList())
+            log.Log("Initial Pop:");
+            routes = routes.OrderBy(r => r.DistanceTraveled).ToList();
+            foreach (Route route in routes)
             {
-
-                Console.WriteLine(route.DistanceTraveled);
+                log.Log("" + route.DistanceTraveled);
             }
-            Console.WriteLine("-");
+
             for (int i = 0; i < generations; i++)
             {
                 Tournament();
                 Repopulate();
-               
+
             }
+
+            log.Log("Final:");
+            routes = routes.OrderBy(r => r.DistanceTraveled).ToList();
             foreach (Route route in routes.OrderBy(r => r.DistanceTraveled).ToList())
             {
-
-                Console.WriteLine(route.DistanceTraveled);
+                log.Log("" + route.DistanceTraveled);
             }
+            log.Log(routes[0].ToString());
 
         }
         public override string ToString()
@@ -105,7 +112,7 @@ namespace AI_Assignment_2
             routes = routes.OrderBy(r => r.DistanceTraveled).ToList();
             foreach (Route route in routes)
             {
-                retString += route.DistanceTraveled + ":" + TARGET + "\n";
+                retString += route.DistanceTraveled + "\n";
             }
 
             return retString;

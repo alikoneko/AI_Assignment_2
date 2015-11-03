@@ -10,10 +10,12 @@ namespace AI_Assignment_2
     {
         private static ServiceRegistry instance;
         private Random random;
+        private Logger log;
 
         public ServiceRegistry()
         {
             random = new Random();
+            log = new Logger();
         }
         public static ServiceRegistry GetInstance()
         {
@@ -27,6 +29,11 @@ namespace AI_Assignment_2
         public Random GetRandom()
         {
             return random;
+        }
+
+        public Logger GetLog()
+        {
+            return log;
         }
     }
 }

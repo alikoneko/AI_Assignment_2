@@ -39,7 +39,7 @@ namespace AI_Assignment_2
 
         public override string ToString()
         {
-            return coordinate.ToString();
+            return coordinate.X + "," + coordinate.Y;
         }
 
         public bool Equals(City obj)

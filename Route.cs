@@ -123,7 +123,7 @@ namespace AI_Assignment_2
             retString += "Total distace Travelled: " + distanceTraveled + "\n";
             for (int i = 0; i < orderVisited.Count; i++)
             {
-                retString += i + ": " + orderVisited[i].ToString() + "\n";
+                retString += orderVisited[i].ToString() + "\n";
             }
 
             return retString;
