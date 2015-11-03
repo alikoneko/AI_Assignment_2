@@ -16,11 +16,19 @@ namespace AI_Assignment_2
             this.coordinate = coordinate;
         }
 
-        public Point Coordinate
+        public int X
         {
             get
             {
-                return coordinate;
+                return coordinate.X;
+            }
+        }
+
+        public int Y
+        {
+            get
+            {
+                return coordinate.Y;
             }
         }
 

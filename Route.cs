@@ -99,13 +99,17 @@ namespace AI_Assignment_2
 
             for (int i = 1; i < orderVisited.Count; i++)
             {
-                distanceTraveled += (int)(Math.Sqrt(Math.Abs((Math.Pow(orderVisited[i].Coordinate.X, 2) - Math.Pow(orderVisited[i - 1].Coordinate.X, 2)))
-                    + Math.Abs((Math.Pow(orderVisited[i].Coordinate.Y, 2) - Math.Pow(orderVisited[i - 1].Coordinate.Y, 2)))));
+                distanceTraveled += Distance(orderVisited[i], orderVisited[i - 1]);
             }
             //last back to first
-            distanceTraveled += (int)(Math.Sqrt(Math.Abs((Math.Pow(orderVisited[orderVisited.Count - 1].Coordinate.X, 2) - Math.Pow(orderVisited[0].Coordinate.X, 2))) +
-                Math.Abs(Math.Pow(orderVisited[orderVisited.Count - 1].Coordinate.Y, 2) - Math.Pow(orderVisited[0].Coordinate.Y, 2))));
+            distanceTraveled += Distance(orderVisited[orderVisited.Count - 1], orderVisited[0]);
 
+        }
+
+        private int Distance(City a, City b)
+        {
+            return (int)(Math.Sqrt(Math.Abs((Math.Pow(b.X, 2) - Math.Pow(a.X, 2)))
+                    + Math.Abs((Math.Pow(b.Y, 2) - Math.Pow(a.Y, 2)))));
         }
 
         //Properties
