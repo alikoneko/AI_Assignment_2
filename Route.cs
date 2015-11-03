@@ -25,12 +25,19 @@ namespace AI_Assignment_2
         {
             City city = cities.Cities[random.Next(cities.Count)];
             orderVisited.Add(city);
+            FinishRoute();
+        }
+
+        private void FinishRoute()
+        {
+            City city = orderVisited[orderVisited.Count - 1];
+
             while (orderVisited.Count < cities.Count)
             {
                 List<City> sortedCities = city.Closest(cities.Cities);
                 foreach (City newCity in sortedCities)
                 {
-                    if(!orderVisited.Contains(newCity))
+                    if (!orderVisited.Contains(newCity))
                     {
                         orderVisited.Add(newCity);
                         city = newCity;
@@ -44,18 +51,15 @@ namespace AI_Assignment_2
         public Route Mutate()
         {
             Route newRoute = new Route(cities);
-            foreach(City city in orderVisited)
-            {
-                newRoute.orderVisited.Add(city);
-            }
-
-            int offset = random.Next(10);
-
-            int randomNumA = random.Next(cities.MaxCitites - offset);
-
-            newRoute.Swap(randomNumA, randomNumA + offset);
             
-            newRoute.CalculateTotalDistance();
+            int offset = random.Next(cities.Count - 2) + 1;
+            newRoute.orderVisited.AddRange(orderVisited.Take(offset).ToList());
+
+            City city = newRoute.orderVisited[newRoute.orderVisited.Count - 1];
+
+            List<City> sortedCities = city.Closest(cities.Cities).Where(c => !newRoute.orderVisited.Contains(c)).Take(5).ToList();
+            newRoute.orderVisited.Add(sortedCities[random.Next(sortedCities.Count - 1)]);
+            newRoute.FinishRoute();
 
             return newRoute;
                   
