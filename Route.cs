@@ -23,57 +23,42 @@ namespace AI_Assignment_2
 
         public void GenerateFirstRoute()
         {
-            HashSet<City> used = new HashSet<City>();
-            for (int i = 0; i < cities.Cities.Count; i++)
+            City city = cities.Cities[random.Next(cities.Count)];
+            orderVisited.Add(city);
+            while (orderVisited.Count < cities.Count)
             {
-                while (true)
+                List<City> sortedCities = city.Closest(cities.Cities);
+                foreach (City newCity in sortedCities)
                 {
-                    City city = cities.Cities[random.Next(100)];
-                    if (!used.Contains(city))
+                    if(!orderVisited.Contains(newCity))
                     {
-                        used.Add(city);
-                        orderVisited.Add(city);
+                        orderVisited.Add(newCity);
+                        city = newCity;
                         break;
                     }
                 }
             }
-            if (distanceTraveled != 0)
-            {
-                distanceTraveled = 0;
-            }
-
             CalculateTotalDistance();
         }
 
-        public void Mutate()
+        public Route Mutate()
         {
-            int mutation = random.Next(2);
-            switch (mutation)
+            Route newRoute = new Route(cities);
+            foreach(City city in orderVisited)
             {
-                case 0:
-                    GenerateFirstRoute();
-                    break;
-                case 1:
-                    int randomNumA = random.Next(cities.MaxCitites);
-                    int randomNumB = random.Next(cities.MaxCitites - 1);
-                    if (randomNumA == randomNumB)
-                    {
-                        randomNumB++;
-                    }
-                    Swap(randomNumA, randomNumB);
-                    randomNumA = random.Next(cities.MaxCitites);
-                    randomNumB = random.Next(cities.MaxCitites - 1); 
-                    if (randomNumA == randomNumB)
-                    {
-                        randomNumB++;
-                    }
-                    Swap(randomNumA, randomNumB);
-                    distanceTraveled = 0;
-                    CalculateTotalDistance();
-                    break;
-                default:
-                    break;
+                newRoute.orderVisited.Add(city);
             }
+
+            int offset = random.Next(10);
+
+            int randomNumA = random.Next(cities.MaxCitites - offset);
+
+            newRoute.Swap(randomNumA, randomNumA + offset);
+            
+            newRoute.CalculateTotalDistance();
+
+            return newRoute;
+                  
         }
 
         private int Crossover()
@@ -96,7 +81,7 @@ namespace AI_Assignment_2
 
         private void CalculateTotalDistance()
         {
-
+            distanceTraveled = 0;
             for (int i = 1; i < orderVisited.Count; i++)
             {
                 distanceTraveled += Distance(orderVisited[i], orderVisited[i - 1]);

@@ -10,13 +10,13 @@ namespace AI_Assignment_2
     {
         //TODO: Decide on a kill the dinosaurs method. Comets can be good-bgad
         //constants adjust to taste
-        int ELITE_PERCENT = 2;
-        int MUTATION_RATE = 10;
+        int ELITES = 2;
+        int MUTATION_RATE = 50;
         double TARGET = 20000.0;
         //variables
         CityMap map;
         List<Route> routes;
-        List<Route> bestAllTime;
+        List<Route> eliteRoutes;
         int initialPopulation;
         Random random;
         int generations;
@@ -25,7 +25,7 @@ namespace AI_Assignment_2
         {
             map = new CityMap();
             routes = new List<Route>();
-            bestAllTime = new List<Route>();
+            eliteRoutes = new List<Route>();
             this.initialPopulation = population;
             this.generations = generations;
             Initialize();
@@ -48,96 +48,64 @@ namespace AI_Assignment_2
 
         private void Tournament()
         {
-            routes = routes.OrderBy(r => r.DistanceTraveled).ToList();
-            List<Route> top = new List<Route>();
-            if (routes.Count > 200)
-            {
-                for (int i = 0; i < 100; i++)
-                {
-                    top.Add(routes[i]);
-                }
-            }
-            else
-            {
-                for (int i = 0; i < 10; i++)
-                {
-                    top.Add(routes[i]);
-                }
-            }
-
-            routes = top;
+            routes = routes.OrderBy(r => r.DistanceTraveled).Take(10).ToList();
         }
 
         private void Repopulate()
         {
-            //copy the top 2 -- check
-            //mutate 10% -- check
-            //repopulate with new routes 30% of initial population (try new things!) --check!
-            List<Route> elites = new List<Route>();
-            List<Route> mutants = new List<Route>();
-            routes = routes.OrderBy(r => r.DistanceTraveled).ToList();
-            for (int i = 0; i < ELITE_PERCENT; i++)
+            // make elites an instance variable
+            // take the top 2 from the current generation, add to elites
+            // sort elites by distance
+            // elites becomse elites.take(2), keeping the best 2 of the new tops + old elites
+            // put elites into population
+            // mutate 100% of population
+            // repopulate with percent of new random routes
+            eliteRoutes.AddRange(routes.OrderBy(r => r.DistanceTraveled).Take(2).ToList());
+            eliteRoutes = eliteRoutes.OrderBy(r => r.DistanceTraveled).Take(2).ToList();
+
+            List<Route> newRoutes = new List<Route>();
+
+            newRoutes.AddRange(eliteRoutes);
+
+            List<Route> bestRoutes = routes.OrderBy(r => r.DistanceTraveled).Take(2).ToList();
+
+            while (newRoutes.Count < initialPopulation)
             {
-                elites.Add(routes[i]);
-            }
-            int mutation_count = routes.Count / MUTATION_RATE;
-            for (int i = 0; i < mutation_count; i++)
-            {
-                int rand = random.Next(routes.Count);
-                routes[rand].Mutate();
+                newRoutes.Add(bestRoutes[random.Next(bestRoutes.Count)].Mutate());
             }
 
-            foreach (Route route in elites)
-            {
-                if (!bestAllTime.Contains(route))
-                {
-                    bestAllTime.Add(route);
-                }
-                routes.Add(route);
-            }
-
-            bestAllTime = bestAllTime.OrderBy(x => x.DistanceTraveled).ToList();
-            if (bestAllTime.Count > 5)
-            {
-                List<Route> temp = new List<Route>();
-                for (int i = 0; i < 5; i++)
-                {
-                    temp.Add(bestAllTime[i]);
-                }
-                bestAllTime = temp;
-            }
-
-            foreach (Route route in bestAllTime)
-            {
-                routes.Add(route);
-            }
-
-            while (routes.Count < (int)(initialPopulation * 0.30))
-            {
-                Route temp = new Route(map);
-                temp.GenerateFirstRoute();
-                routes.Add(temp);
-            }
-
+            routes = newRoutes;
         }
         
         public void Run()
         {
             GeneratePopulation();
+            foreach (Route route in routes.OrderBy(r => r.DistanceTraveled).ToList())
+            {
+
+                Console.WriteLine(route.DistanceTraveled);
+            }
+            Console.WriteLine("-");
             for (int i = 0; i < generations; i++)
             {
                 Tournament();
                 Repopulate();
+               
             }
-            Tournament();
+            foreach (Route route in routes.OrderBy(r => r.DistanceTraveled).ToList())
+            {
+
+                Console.WriteLine(route.DistanceTraveled);
+            }
 
         }
         public override string ToString()
         {
             string retString = "";
+            routes = routes.OrderBy(r => r.DistanceTraveled).ToList();
             foreach (Route route in routes)
             {
-                retString += route.DistanceTraveled + " : " + TARGET + " \n";
+                retString += route.DistanceTraveled + ":" + TARGET + "\n";
             }
 
             return retString;
