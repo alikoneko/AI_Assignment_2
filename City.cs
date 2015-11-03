@@ -32,9 +32,30 @@ namespace AI_Assignment_2
             }
         }
 
+        public List<City> Closest(List<City> cities)
+        {
+            return cities.OrderBy(x => x.Distance(this)).ToList();
+        }
+
         public override string ToString()
         {
             return coordinate.ToString();
+        }
+
+        public bool Equals(City obj)
+        {
+            return coordinate.Equals(obj.coordinate);
+        }
+
+        public override int GetHashCode()
+        {
+            return coordinate.GetHashCode();
+        }
+
+        private int Distance(City city)
+        {
+            return (int)Math.Sqrt(Math.Abs((Math.Pow(coordinate.X, 2) - Math.Pow(city.X, 2)))
+                    + Math.Abs((Math.Pow(coordinate.Y, 2) - Math.Pow(city.Y, 2))));
         }
     }
 }

@@ -52,6 +52,13 @@ namespace AI_Assignment_2
             }
         }
 
+        public int Count
+        {
+            get
+            {
+                return cities.Count;
+            }
+        }
         public List<City> Cities
         {
             get
