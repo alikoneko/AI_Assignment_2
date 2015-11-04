@@ -34,7 +34,8 @@ namespace AI_Assignment_2
 
             while (orderVisited.Count < cities.Count)
             {
-                List<City> sortedCities = city.Closest(cities.Cities);
+                List<City> sortedCities = city.Closest(cities.Cities).ToList();
+
                 foreach (City newCity in sortedCities)
                 {
                     if (!orderVisited.Contains(newCity))

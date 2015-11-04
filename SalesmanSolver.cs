@@ -10,8 +10,9 @@ namespace AI_Assignment_2
     {
         //TODO: Decide on a kill the dinosaurs method. Comets can be good-bgad
         //constants adjust to taste
-        int ELITES = 2;
+        double ELITE_PERCENT = 0.02;
         int MUTATION_RATE = 50;
+        double TOP_PERCENT = 0.10;
         double TARGET = 20000.0;
         //variables
         CityMap map;
@@ -51,7 +52,7 @@ namespace AI_Assignment_2
 
         private void Tournament()
         {
-            routes = routes.OrderBy(r => r.DistanceTraveled).Take(10).ToList();
+            routes = routes.OrderBy(r => r.DistanceTraveled).Take((int)(routes.Count * TOP_PERCENT)).ToList();
         }
 
         private void Repopulate()
@@ -63,8 +64,8 @@ namespace AI_Assignment_2
             // put elites into population
             // mutate 100% of population
             // repopulate with percent of new random routes
-            eliteRoutes.AddRange(routes.OrderBy(r => r.DistanceTraveled).Take(2).ToList());
-            eliteRoutes = eliteRoutes.OrderBy(r => r.DistanceTraveled).Take(2).ToList();
+            eliteRoutes.AddRange(routes.OrderBy(r => r.DistanceTraveled).Take((int)(routes.Count * ELITE_PERCENT)).ToList());
+            eliteRoutes = eliteRoutes.OrderBy(r => r.DistanceTraveled).Take((int)(routes.Count * ELITE_PERCENT)).ToList();
 
             List<Route> newRoutes = new List<Route>();
 
@@ -83,13 +84,8 @@ namespace AI_Assignment_2
         public void Run()
         {
             GeneratePopulation();
-            log.Log("Initial Pop:");
             routes = routes.OrderBy(r => r.DistanceTraveled).ToList();
-            foreach (Route route in routes)
-            {
-                log.Log("" + route.DistanceTraveled);
-            }
-
+           
             for (int i = 0; i < generations; i++)
             {
                 Tournament();
@@ -97,12 +93,7 @@ namespace AI_Assignment_2
 
             }
 
-            log.Log("Final:");
-            routes = routes.OrderBy(r => r.DistanceTraveled).ToList();
-            foreach (Route route in routes.OrderBy(r => r.DistanceTraveled).ToList())
-            {
-                log.Log("" + route.DistanceTraveled);
-            }
+            log.Log("" + routes[0].DistanceTraveled);
             log.Log(routes[0].ToString());
 
         }

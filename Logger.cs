@@ -10,7 +10,7 @@ namespace AI_Assignment_2
     {
         public void Log(string message)
         {
-            System.IO.File.AppendAllText(@"Log.txt", message + "\n");
+            System.IO.File.AppendAllText(@"AI_Log.txt", message + "\n");
         }
     }
 }
