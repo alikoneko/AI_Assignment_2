@@ -12,7 +12,7 @@ namespace AI_Assignment_2
         {
             for (int i = 0; i < 1; i++)
             {
-                SalesmanSolver solve = new SalesmanSolver(100, 10000);
+                SalesmanSolver solve = new SalesmanSolver(500, 1000);
                 solve.Run();
             }
             //Console.Write(solve);
