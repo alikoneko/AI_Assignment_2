@@ -8,6 +8,8 @@ namespace AI_Assignment_2
 {
     class Route
     {
+        enum MutationMethod { Smart, Stupid };
+        const MutationMethod MUTATION_METHOD = MutationMethod.Smart;
         private CityMap cities;
         private int distanceTraveled;
         private List<City> orderVisited;
@@ -52,18 +54,30 @@ namespace AI_Assignment_2
         public Route Mutate()
         {
             Route newRoute = new Route(cities);
-            
-            int offset = random.Next(cities.Count - 2) + 1;
-            newRoute.orderVisited.AddRange(orderVisited.Take(offset).ToList());
+            int offset;
+            switch (MUTATION_METHOD) {
+                case MutationMethod.Smart:
+                    offset = random.Next(cities.Count - 2) + 1;
+                    newRoute.orderVisited.AddRange(orderVisited.Take(offset).ToList());
 
-            City city = newRoute.orderVisited[newRoute.orderVisited.Count - 1];
+                    City city = newRoute.orderVisited[newRoute.orderVisited.Count - 1];
 
-            List<City> sortedCities = city.Closest(cities.Cities).Where(c => !newRoute.orderVisited.Contains(c)).Take(5).ToList();
-            newRoute.orderVisited.Add(sortedCities[random.Next(sortedCities.Count - 1)]);
-            newRoute.FinishRoute();
-
+                    List<City> sortedCities = city.Closest(cities.Cities).Where(c => !newRoute.orderVisited.Contains(c)).Take(5).ToList();
+                    newRoute.orderVisited.Add(sortedCities[random.Next(sortedCities.Count - 1)]);
+                    newRoute.FinishRoute();
+                    break;
+                case MutationMethod.Stupid:
+                    newRoute.orderVisited.AddRange(orderVisited.ToList());
+                    //offset = random.Next(newRoute.orderVisited.Count - 2);
+                    newRoute.Swap(random.Next(newRoute.orderVisited.Count), random.Next(newRoute.orderVisited.Count));
+                    newRoute.CalculateTotalDistance();
+                    break;
+                default:
+                    newRoute.orderVisited.AddRange(orderVisited.ToList());
+                    newRoute.CalculateTotalDistance();
+                    break;
+            }
             return newRoute;
-                  
         }
 
         private int Crossover()

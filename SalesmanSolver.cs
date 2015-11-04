@@ -80,7 +80,8 @@ namespace AI_Assignment_2
         public void Run()
         {
             GeneratePopulation();
-
+            routes = routes.OrderBy(r => r.DistanceTraveled).ToList();
+            log.Log("" + routes[0].DistanceTraveled);
             for (int i = 0; i < generations; i++)
             {
                 Tournament();
