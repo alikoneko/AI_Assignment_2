@@ -10,9 +10,9 @@ namespace AI_Assignment_2
     {
         static void Main(string[] args)
         {
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 50; i++)
             {
-                SalesmanSolver solve = new SalesmanSolver(500, 1000);
+                SalesmanSolver solve = new SalesmanSolver(500, 2000);
                 solve.Run();
             }
             //Console.Write(solve);

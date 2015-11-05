@@ -9,7 +9,8 @@ namespace AI_Assignment_2
     class Route
     {
         enum MutationMethod { Smart, Stupid };
-        const MutationMethod MUTATION_METHOD = MutationMethod.Smart;
+        
+        const MutationMethod MUTATION_METHOD = MutationMethod.Stupid;
         private CityMap cities;
         private int distanceTraveled;
         private List<City> orderVisited;
@@ -51,6 +52,13 @@ namespace AI_Assignment_2
             CalculateTotalDistance();
         }
 
+        public Route Mate(Route father)
+        {
+            Route newRoute = new Route(cities);
+            return newRoute;
+        }
+
+
         public Route Mutate()
         {
             Route newRoute = new Route(cities);
@@ -80,9 +88,46 @@ namespace AI_Assignment_2
             return newRoute;
         }
 
-        private int Crossover()
+        private void Crossover(Route a, Route b)
         {
-            throw new NotImplementedException();
+            List<City> even = a.orderVisited.Where((item, index) => index % 2 == 0).ToList();
+            List<City> odd = b.orderVisited.Where((item, index) => index % 2 != 0).ToList();
+            List<City> sorted;
+            int even_count = 0;
+            int odd_count = 0;
+            int count = 0;
+            while ((even_count + odd_count) < orderVisited.Count)
+            {
+                if (count % 2 == 0)
+                {
+                    if (!orderVisited.Contains(even[even_count]))
+                    {
+                        orderVisited.Add(even[even_count]);
+                    }
+                    else
+                    {
+                        sorted = even[even_count].Closest(cities.Cities).Where(c => !orderVisited.Contains(c)).Take(1).ToList();
+                        orderVisited.AddRange(sorted);
+                    }
+                    even_count++;
+                    count++;
+
+                }
+                else
+                {
+                    if (!orderVisited.Contains(odd[odd_count]))
+                    {
+                        orderVisited.Add(odd[odd_count]);
+                    }
+                    else
+                    {
+                        sorted = odd[odd_count].Closest(cities.Cities).Where(c => !orderVisited.Contains(c)).Take(1).ToList();
+                        orderVisited.AddRange(sorted);
+                    }
+                    odd_count++;
+                    count++;
+                }
+            }
         }
 
         private void Swap(int a, int b)

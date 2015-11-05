@@ -11,9 +11,11 @@ namespace AI_Assignment_2
         //TODO: Decide on a kill the dinosaurs method. Comets can be good-bgad
         //constants adjust to taste
         int ELITE_COUNT = 2;
-        int MUTATION_RATE = 50;
+        int MUTATION_RATE = 5;
         double TOP_PERCENT = 0.10;
         double TARGET = 20000.0;
+        enum MateMethod { Asexual, Sexual };
+        const MateMethod MATE_METHOD = MateMethod.Sexual;
         //variables
         CityMap map;
         List<Route> routes;
@@ -68,12 +70,18 @@ namespace AI_Assignment_2
             newRoutes.AddRange(eliteRoutes);
 
             List<Route> bestRoutes = routes.Take(ELITE_COUNT).ToList();
-
             while (newRoutes.Count < initialPopulation)
             {
-                newRoutes.Add(bestRoutes[random.Next(bestRoutes.Count - 1)].Mutate());
-            }
+                switch (MATE_METHOD)
+                {
+                    case MateMethod.Asexual:
+                        newRoutes.Add(bestRoutes[random.Next(bestRoutes.Count - 1)].Mutate());
+                        break;
+                    case MateMethod.Sexual:
+                        break;
 
+                }
+            }
             routes = newRoutes;
         }
         
@@ -81,14 +89,14 @@ namespace AI_Assignment_2
         {
             GeneratePopulation();
             routes = routes.OrderBy(r => r.DistanceTraveled).ToList();
-            log.Log("" + routes[0].DistanceTraveled);
+            //log.Log("" + routes[0].DistanceTraveled);
             for (int i = 0; i < generations; i++)
             {
                 Tournament();
             }
             routes = routes.OrderBy(r => r.DistanceTraveled).ToList();
             log.Log("" + routes[0].DistanceTraveled);
-            log.Log(routes[0].ToString());
+            //log.Log(routes[0].ToString());
 
         }
         public override string ToString()
