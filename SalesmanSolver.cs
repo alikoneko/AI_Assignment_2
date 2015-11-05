@@ -15,7 +15,7 @@ namespace AI_Assignment_2
         double TOP_PERCENT = 0.10;
         double TARGET = 20000.0;
         enum MateMethod { Asexual, Sexual };
-        const MateMethod MATE_METHOD = MateMethod.Sexual;
+        const MateMethod MATE_METHOD = MateMethod.Asexual;
         //variables
         CityMap map;
         List<Route> routes;
