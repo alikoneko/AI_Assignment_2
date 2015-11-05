@@ -10,8 +10,13 @@ namespace AI_Assignment_2
     {
         //TODO: Decide on a kill the dinosaurs method. Comets can be good-bgad
         //constants adjust to taste
+<<<<<<< HEAD
         int ELITE_COUNT = 2;
         int MUTATION_RATE = 5;
+=======
+        double ELITE_PERCENT = 0.02;
+        int MUTATION_RATE = 50;
+>>>>>>> parent of f35a38a... Minor refactor
         double TOP_PERCENT = 0.10;
         double TARGET = 20000.0;
         enum MateMethod { Asexual, Sexual };
@@ -55,6 +60,10 @@ namespace AI_Assignment_2
         private void Tournament()
         {
             routes = routes.OrderBy(r => r.DistanceTraveled).Take((int)(routes.Count * TOP_PERCENT)).ToList();
+        }
+
+        private void Repopulate()
+        {
             // make elites an instance variable
             // take the top 2 from the current generation, add to elites
             // sort elites by distance
@@ -62,13 +71,14 @@ namespace AI_Assignment_2
             // put elites into population
             // mutate 100% of population
             // repopulate with percent of new random routes
-            eliteRoutes.AddRange(routes.Take(ELITE_COUNT).ToList());
-            eliteRoutes = eliteRoutes.OrderBy(r => r.DistanceTraveled).Take(ELITE_COUNT).ToList();
+            eliteRoutes.AddRange(routes.OrderBy(r => r.DistanceTraveled).Take((int)(routes.Count * ELITE_PERCENT)).ToList());
+            eliteRoutes = eliteRoutes.OrderBy(r => r.DistanceTraveled).Take((int)(routes.Count * ELITE_PERCENT)).ToList();
 
             List<Route> newRoutes = new List<Route>();
 
             newRoutes.AddRange(eliteRoutes);
 
+<<<<<<< HEAD
             List<Route> bestRoutes = routes.Take(ELITE_COUNT).ToList();
             while (newRoutes.Count < initialPopulation)
             {
@@ -79,6 +89,14 @@ namespace AI_Assignment_2
                         break;
                     case MateMethod.Sexual:
                         break;
+=======
+            List<Route> bestRoutes = routes.OrderBy(r => r.DistanceTraveled).Take(2).ToList();
+
+            while (newRoutes.Count < initialPopulation)
+            {
+                newRoutes.Add(bestRoutes[random.Next(bestRoutes.Count)].Mutate());
+            }
+>>>>>>> parent of f35a38a... Minor refactor
 
                 }
             }
@@ -89,12 +107,18 @@ namespace AI_Assignment_2
         {
             GeneratePopulation();
             routes = routes.OrderBy(r => r.DistanceTraveled).ToList();
+<<<<<<< HEAD
             //log.Log("" + routes[0].DistanceTraveled);
+=======
+           
+>>>>>>> parent of f35a38a... Minor refactor
             for (int i = 0; i < generations; i++)
             {
                 Tournament();
+                Repopulate();
+
             }
-            routes = routes.OrderBy(r => r.DistanceTraveled).ToList();
+
             log.Log("" + routes[0].DistanceTraveled);
             //log.Log(routes[0].ToString());
 

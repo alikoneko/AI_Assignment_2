@@ -12,7 +12,11 @@ namespace AI_Assignment_2
         {
             for (int i = 0; i < 50; i++)
             {
+<<<<<<< HEAD
                 SalesmanSolver solve = new SalesmanSolver(500, 2000);
+=======
+                SalesmanSolver solve = new SalesmanSolver(100, 1000);
+>>>>>>> parent of f35a38a... Minor refactor
                 solve.Run();
             }
             //Console.Write(solve);
