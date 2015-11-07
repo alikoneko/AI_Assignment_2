@@ -16,8 +16,7 @@ namespace AI_Assignment_2
         int MUTATION_RATE = 50;
         double TOP_PERCENT = 10;
         double TARGET = 20000.0;
-        enum MateMethod { Asexual, Sexual };
-        const MateMethod MATE_METHOD = MateMethod.Asexual;
+
         //variables
         CityMap map;
         List<Route> routes;
@@ -48,9 +47,11 @@ namespace AI_Assignment_2
             for (int i = 0; i < initialPopulation; i++)
             {
                 Route route = new Route(map);
-                route.GenerateFirstRoute();
+                route.Randomize();
                 routes.Add(route);
             }
+
+            log.Log("Initial best: " + routes.OrderBy(r => r.DistanceTraveled).First().DistanceTraveled);
 
         }
 
@@ -74,22 +75,7 @@ namespace AI_Assignment_2
             List<Route> bestRoutes = routes.Take(ELITE_COUNT).ToList();
             while (newRoutes.Count < initialPopulation)
             {
-                switch (MATE_METHOD)
-                {
-                    case MateMethod.Asexual:
-                        newRoutes.Add(bestRoutes[random.Next(bestRoutes.Count - 1)].Mutate());
-                        break;
-                    case MateMethod.Sexual:
-                        bestRoutes.AddRange(routes.OrderBy(r => r.DistanceTraveled).Take(2).ToList());
-
-                        while (newRoutes.Count < initialPopulation)
-                        {
-                            newRoutes.Add(bestRoutes[random.Next(bestRoutes.Count)].Mutate());
-
-                        }
-                        routes = newRoutes;
-                        break;
-                }
+                newRoutes.Add(bestRoutes[random.Next(bestRoutes.Count - 1)].Mutate());
             }
 
             routes = newRoutes;
@@ -108,7 +94,7 @@ namespace AI_Assignment_2
 
             }
 
-            log.Log("" + routes[0].DistanceTraveled);
+            log.Log("Final Best: " + routes[0].DistanceTraveled);
             //log.Log(routes[0].ToString());
 
         }

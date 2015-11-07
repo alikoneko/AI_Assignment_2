@@ -8,11 +8,10 @@ namespace AI_Assignment_2
 {
     class Route
     {
-        enum ReproductionMethod { Mate, Asexual };
-        
+        enum ReproductionMethod { Asexual, Mate }; 
         const ReproductionMethod REPRODUCTION_METHOD = ReproductionMethod.Asexual;
         private CityMap cities;
-        private double distanceTraveled;
+        private double distanceTraveled = 0;
         private List<City> orderVisited;
         private Random random;
         private Dictionary<City, Double> genotype;
@@ -20,46 +19,38 @@ namespace AI_Assignment_2
         public Route(CityMap cities)
         {
             this.cities = cities;
-            distanceTraveled = 0;
-            orderVisited = new List<City>();
             Initialize();
-            if (ReproductionMethod.Mate == 0)
-            {
-                Gen
-            }
         }
 
-        public void GenerateFirstRoute()
+        public void Randomize()
         {
-            City city = cities.Cities[random.Next(cities.Count)];
-            orderVisited.Add(city);
-            FinishRoute();
+            genotype = new Dictionary<City, double>();
+            foreach (City city in cities.Cities)
+            {
+                genotype.Add(city, random.NextDouble());
+            }
+            ClearCache();
         }
 
-        private void FinishRoute()
+        private void ClearCache()
         {
-            City city = orderVisited[orderVisited.Count - 1];
-
-            while (orderVisited.Count < cities.Count)
-            {
-                List<City> sortedCities = city.Closest(cities.Cities).ToList();
-
-                foreach (City newCity in sortedCities)
-                {
-                    if (!orderVisited.Contains(newCity))
-                    {
-                        orderVisited.Add(newCity);
-                        city = newCity;
-                        break;
-                    }
-                }
-            }
-            CalculateTotalDistance();
+            orderVisited = null;
+            distanceTraveled = 0;
         }
 
         public Route Mate(Route father)
         {
             Route newRoute = new Route(cities);
+            newRoute.genotype = new Dictionary<City, double>();
+
+            foreach (City city in cities.Cities)
+            {
+                Route parent = (random.Next() % 2 == 0) ? this : father;
+                newRoute.genotype.Add(city, parent.genotype[city]);
+            }
+
+            newRoute.ClearCache();
+
             return newRoute;
         }
 
@@ -67,92 +58,24 @@ namespace AI_Assignment_2
         public Route Mutate()
         {
             Route newRoute = new Route(cities);
-            int offset;
-            switch (REPRODUCTION_METHOD) {
-                case ReproductionMethod.Mate:
-                    
-                    break;
-                case ReproductionMethod.Asexual:
-                    newRoute.orderVisited.AddRange(orderVisited.ToList());
-                    //offset = random.Next(newRoute.orderVisited.Count - 2);
-                    newRoute.Swap(random.Next(newRoute.orderVisited.Count), random.Next(newRoute.orderVisited.Count));
-                    newRoute.CalculateTotalDistance();
-                    break;
-                default:
-                    newRoute.orderVisited.AddRange(orderVisited.ToList());
-                    newRoute.CalculateTotalDistance();
-                    break;
+            newRoute.genotype = new Dictionary<City, double>();
+
+            foreach (KeyValuePair<City, double> entry in genotype) {
+                newRoute.genotype.Add(entry.Key, entry.Value);
             }
+
+            newRoute.genotype[cities.Cities[random.Next(cities.Count)]] = random.NextDouble();
+            newRoute.ClearCache();
+
             return newRoute;
         }
-
-        private void Crossover(Route a, Route b)
-        {
-            List<City> even = a.orderVisited.Where((item, index) => index % 2 == 0).ToList();
-            List<City> odd = b.orderVisited.Where((item, index) => index % 2 != 0).ToList();
-            List<City> sorted;
-            int even_count = 0;
-            int odd_count = 0;
-            int count = 0;
-            while ((even_count + odd_count) < orderVisited.Count)
-            {
-                if (count % 2 == 0)
-                {
-                    if (!orderVisited.Contains(even[even_count]))
-                    {
-                        orderVisited.Add(even[even_count]);
-                    }
-                    else
-                    {
-                        sorted = even[even_count].Closest(cities.Cities).Where(c => !orderVisited.Contains(c)).Take(1).ToList();
-                        orderVisited.AddRange(sorted);
-                    }
-                    even_count++;
-                    count++;
-
-                }
-                else
-                {
-                    if (!orderVisited.Contains(odd[odd_count]))
-                    {
-                        orderVisited.Add(odd[odd_count]);
-                    }
-                    else
-                    {
-                        sorted = odd[odd_count].Closest(cities.Cities).Where(c => !orderVisited.Contains(c)).Take(1).ToList();
-                        orderVisited.AddRange(sorted);
-                    }
-                    odd_count++;
-                    count++;
-                }
-            }
-        }
-
-        private void Swap(int a, int b)
-        {
-            City temp = orderVisited[a];
-            orderVisited[a] = orderVisited[b];
-            orderVisited[b] = temp;
-        }
-
 
         private void Initialize()
         {
             random = ServiceRegistry.GetInstance().GetRandom();
         }
 
-        private void CalculateTotalDistance()
-        {
-            distanceTraveled = 0;
-            for (int i = 1; i < orderVisited.Count; i++)
-            {
-                distanceTraveled += Distance(orderVisited[i], orderVisited[i - 1]);
-            }
-            //last back to first
-            distanceTraveled += Distance(orderVisited[orderVisited.Count - 1], orderVisited[0]);
-
-        }
-
+       
         private double Distance(City a, City b)
         {
             return Math.Sqrt(
@@ -162,28 +85,51 @@ namespace AI_Assignment_2
         }
 
         //Properties
-        public int Count
-        {
-            get
-            {
-                return orderVisited.Count;
-            }
-        }
-
+        
         public double DistanceTraveled
         {
             get
             {
+                if (distanceTraveled == 0)
+                {
+                    for (int i = 1; i < OrderVisited.Count; i++)
+                    {
+                        distanceTraveled += Distance(OrderVisited[i], OrderVisited[i - 1]);
+                    }
+                    //last back to first
+                    distanceTraveled += Distance(OrderVisited[OrderVisited.Count - 1], OrderVisited[0]); 
+                }
                 return distanceTraveled;
             }
         }
+
+        public List<City> OrderVisited
+        {
+            get
+            {
+                if (orderVisited == null)
+                {
+                    orderVisited = (from entry in genotype orderby entry.Value ascending select entry.Key).ToList();
+                }
+                return orderVisited;
+            }
+        }
+
+        public ReproductionMethod ReproductionFlag
+        {
+            get
+            {
+                return REPRODUCTION_METHOD;
+            }
+        }
+
         public override string ToString()
         {
             String retString = "";
             retString += "Total distace Travelled: " + distanceTraveled + "\n";
-            for (int i = 0; i < orderVisited.Count; i++)
+            for (int i = 0; i < OrderVisited.Count; i++)
             {
-                retString += orderVisited[i].ToString() + "\n";
+                retString += OrderVisited[i].ToString() + "\n";
             }
 
             return retString;
