@@ -70,8 +70,8 @@ namespace AI_Assignment_2
 
                     City city = newRoute.orderVisited[newRoute.orderVisited.Count - 1];
 
-                    List<City> sortedCities = city.Closest(cities.Cities).Where(c => !newRoute.orderVisited.Contains(c)).Take(5).ToList();
-                    newRoute.orderVisited.Add(sortedCities[random.Next(sortedCities.Count - 1)]);
+                    List<City> sortedCities = city.Closest(cities.Cities).Where(c => !newRoute.orderVisited.Contains(c)).Take(1).ToList();
+                    newRoute.orderVisited.Add(sortedCities[0]);
                     newRoute.FinishRoute();
                     break;
                 case MutationMethod.Stupid:
@@ -157,8 +157,10 @@ namespace AI_Assignment_2
 
         private int Distance(City a, City b)
         {
-            return (int)(Math.Sqrt(Math.Abs((Math.Pow(b.X, 2) - Math.Pow(a.X, 2)))
-                    + Math.Abs((Math.Pow(b.Y, 2) - Math.Pow(a.Y, 2)))));
+            return (int)Math.Sqrt(
+                Math.Pow(a.X - b.X, 2) +
+                Math.Pow(a.Y - b.Y, 2)
+            );
         }
 
         //Properties

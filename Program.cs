@@ -10,17 +10,16 @@ namespace AI_Assignment_2
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Running...");
             for (int i = 0; i < 50; i++)
             {
-<<<<<<< HEAD
-                SalesmanSolver solve = new SalesmanSolver(500, 2000);
-=======
-                SalesmanSolver solve = new SalesmanSolver(100, 1000);
->>>>>>> parent of f35a38a... Minor refactor
+                SalesmanSolver solve = new SalesmanSolver(250, 10000);
                 solve.Run();
             }
+            Console.WriteLine("Done!");
+
             //Console.Write(solve);
-            //Console.ReadKey();
+            Console.ReadKey();
         }
     }
 }
