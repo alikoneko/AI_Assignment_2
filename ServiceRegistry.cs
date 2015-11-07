@@ -11,11 +11,14 @@ namespace AI_Assignment_2
         private static ServiceRegistry instance;
         private Random random;
         private Logger log;
+        private ReproductionMethod reproductionMethod;
 
         public ServiceRegistry()
         {
             random = new Random();
             log = new Logger();
+            reproductionMethod = new ReproductionMethod(ReproductionMethod.Methods.Mate);
+
         }
         public static ServiceRegistry GetInstance()
         {
@@ -24,6 +27,11 @@ namespace AI_Assignment_2
                 instance = new ServiceRegistry();
             }
             return instance;
+        }
+
+        public ReproductionMethod.Methods GetReproductionMethod()
+        {
+            return reproductionMethod.Method;
         }
 
         public Random GetRandom()

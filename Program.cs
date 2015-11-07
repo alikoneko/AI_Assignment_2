@@ -11,9 +11,9 @@ namespace AI_Assignment_2
         static void Main(string[] args)
         {
             Console.WriteLine("Running...");
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 5; i++)
             {
-                SalesmanSolver solve = new SalesmanSolver(200, 1000);
+                SalesmanSolver solve = new SalesmanSolver(200, 10000);
                 solve.Run();
             }
             Console.WriteLine("Done!");

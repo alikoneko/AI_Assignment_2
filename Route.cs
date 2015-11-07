@@ -8,8 +8,6 @@ namespace AI_Assignment_2
 {
     class Route
     {
-        enum ReproductionMethod { Asexual, Mate }; 
-        const ReproductionMethod REPRODUCTION_METHOD = ReproductionMethod.Asexual;
         private CityMap cities;
         private double distanceTraveled = 0;
         private List<City> orderVisited;
@@ -103,6 +101,7 @@ namespace AI_Assignment_2
             }
         }
 
+        
         public List<City> OrderVisited
         {
             get
@@ -112,14 +111,6 @@ namespace AI_Assignment_2
                     orderVisited = (from entry in genotype orderby entry.Value ascending select entry.Key).ToList();
                 }
                 return orderVisited;
-            }
-        }
-
-        public ReproductionMethod ReproductionFlag
-        {
-            get
-            {
-                return REPRODUCTION_METHOD;
             }
         }
 

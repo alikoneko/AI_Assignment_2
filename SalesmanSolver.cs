@@ -12,26 +12,26 @@ namespace AI_Assignment_2
         //constants adjust to taste
 
         int ELITE_COUNT = 2;
-        double ELITE_PERCENT = 0.02;
         int MUTATION_RATE = 50;
         double TOP_PERCENT = 10;
         double TARGET = 20000.0;
 
         //variables
-        CityMap map;
-        List<Route> routes;
-        List<Route> eliteRoutes;
-        int initialPopulation;
-        Random random;
-        int generations;
-        Logger log;
+        private CityMap map;
+        private List<Route> routes;
+        private List<Route> eliteRoutes;
+        private int populationSize;
+        private Random random;
+        private int generations;
+        private Logger log;
+
 
         public SalesmanSolver(int population, int generations)
         {
             map = new CityMap();
             routes = new List<Route>();
             eliteRoutes = new List<Route>();
-            this.initialPopulation = population;
+            this.populationSize = population;
             this.generations = generations;
             Initialize();
         }
@@ -40,11 +40,12 @@ namespace AI_Assignment_2
         {
             random = ServiceRegistry.GetInstance().GetRandom();
             log = ServiceRegistry.GetInstance().GetLog();
+            
         }
 
         private void GeneratePopulation()
         {
-            for (int i = 0; i < initialPopulation; i++)
+            for (int i = 0; i < populationSize; i++)
             {
                 Route route = new Route(map);
                 route.Randomize();
@@ -72,10 +73,23 @@ namespace AI_Assignment_2
 
             newRoutes.AddRange(eliteRoutes);
 
-            List<Route> bestRoutes = routes.Take(ELITE_COUNT).ToList();
-            while (newRoutes.Count < initialPopulation)
+            while (newRoutes.Count < populationSize)
             {
-                newRoutes.Add(bestRoutes[random.Next(bestRoutes.Count - 1)].Mutate());
+                switch (ServiceRegistry.GetInstance().GetReproductionMethod())
+                {
+                    case ReproductionMethod.Methods.Asexual:
+                        newRoutes.Add(routes[random.Next(routes.Count)].Mutate());
+                        break;
+                    case ReproductionMethod.Methods.Mate:
+                        Route parent1 = routes[random.Next(routes.Count)];
+                        Route parent2 = routes[random.Next(routes.Count)];;
+                        Route child1 = parent1.Mate(parent2);
+                        newRoutes.Add(child1);
+                        break;
+                    default:
+                        throw new NotImplementedException("ReproductionMethod " + ServiceRegistry.GetInstance().GetReproductionMethod() + " not implemented");
+                }
+                
             }
 
             routes = newRoutes;
