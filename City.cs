@@ -9,14 +9,14 @@ namespace AI_Assignment_2
 {
     class City
     {
-        private Point coordinate;
+        private PointD coordinate;
 
-        public City(Point coordinate)
+        public City(PointD coordinate)
         {
             this.coordinate = coordinate;
         }
 
-        public int X
+        public double X
         {
             get
             {
@@ -24,7 +24,7 @@ namespace AI_Assignment_2
             }
         }
 
-        public int Y
+        public double Y
         {
             get
             {
@@ -52,9 +52,9 @@ namespace AI_Assignment_2
             return coordinate.GetHashCode();
         }
 
-        private int Distance(City city)
+        private double Distance(City city)
         {
-            return (int)Math.Sqrt(Math.Abs((Math.Pow(coordinate.X, 2) - Math.Pow(city.X, 2)))
+            return (double)Math.Sqrt(Math.Abs((Math.Pow(coordinate.X, 2) - Math.Pow(city.X, 2)))
                     + Math.Abs((Math.Pow(coordinate.Y, 2) - Math.Pow(city.Y, 2))));
         }
     }

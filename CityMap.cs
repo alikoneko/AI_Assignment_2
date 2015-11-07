@@ -10,7 +10,7 @@ namespace AI_Assignment_2
     class CityMap
     {
         //TODO: make cities aware of neighboring cities.
-        private int MAX_XY = 1000;
+        private double MAX_XY = 1000.0;
         private int MAX_CITIES = 100;
         private Random random;
 
@@ -36,12 +36,12 @@ namespace AI_Assignment_2
 
         private void GenerateCities()
         {
-            HashSet<Point> coordinates = new HashSet<Point>();
+            HashSet<PointD> coordinates = new HashSet<PointD>();
             for (int i = 0; i < MAX_CITIES; i++)
             {
                 while (true)
                 {
-                    Point point = new Point(random.Next(MAX_XY), random.Next(MAX_XY));
+                    PointD point = new PointD(random.NextDouble() * MAX_XY, random.NextDouble() * MAX_XY);
                     if(!coordinates.Contains(point))
                     {
                         coordinates.Add(point);

@@ -8,13 +8,14 @@ namespace AI_Assignment_2
 {
     class Route
     {
-        enum MutationMethod { Smart, Stupid };
+        enum ReproductionMethod { Mate, Asexual };
         
-        const MutationMethod MUTATION_METHOD = MutationMethod.Stupid;
+        const ReproductionMethod REPRODUCTION_METHOD = ReproductionMethod.Asexual;
         private CityMap cities;
-        private int distanceTraveled;
+        private double distanceTraveled;
         private List<City> orderVisited;
-        Random random;
+        private Random random;
+        private Dictionary<City, Double> genotype;
 
         public Route(CityMap cities)
         {
@@ -22,6 +23,10 @@ namespace AI_Assignment_2
             distanceTraveled = 0;
             orderVisited = new List<City>();
             Initialize();
+            if (ReproductionMethod.Mate == 0)
+            {
+                Gen
+            }
         }
 
         public void GenerateFirstRoute()
@@ -63,18 +68,11 @@ namespace AI_Assignment_2
         {
             Route newRoute = new Route(cities);
             int offset;
-            switch (MUTATION_METHOD) {
-                case MutationMethod.Smart:
-                    offset = random.Next(cities.Count - 2) + 1;
-                    newRoute.orderVisited.AddRange(orderVisited.Take(offset).ToList());
-
-                    City city = newRoute.orderVisited[newRoute.orderVisited.Count - 1];
-
-                    List<City> sortedCities = city.Closest(cities.Cities).Where(c => !newRoute.orderVisited.Contains(c)).Take(1).ToList();
-                    newRoute.orderVisited.Add(sortedCities[0]);
-                    newRoute.FinishRoute();
+            switch (REPRODUCTION_METHOD) {
+                case ReproductionMethod.Mate:
+                    
                     break;
-                case MutationMethod.Stupid:
+                case ReproductionMethod.Asexual:
                     newRoute.orderVisited.AddRange(orderVisited.ToList());
                     //offset = random.Next(newRoute.orderVisited.Count - 2);
                     newRoute.Swap(random.Next(newRoute.orderVisited.Count), random.Next(newRoute.orderVisited.Count));
@@ -155,9 +153,9 @@ namespace AI_Assignment_2
 
         }
 
-        private int Distance(City a, City b)
+        private double Distance(City a, City b)
         {
-            return (int)Math.Sqrt(
+            return Math.Sqrt(
                 Math.Pow(a.X - b.X, 2) +
                 Math.Pow(a.Y - b.Y, 2)
             );

@@ -13,7 +13,7 @@ namespace AI_Assignment_2
             Console.WriteLine("Running...");
             for (int i = 0; i < 50; i++)
             {
-                SalesmanSolver solve = new SalesmanSolver(250, 10000);
+                SalesmanSolver solve = new SalesmanSolver(500, 10000);
                 solve.Run();
             }
             Console.WriteLine("Done!");
