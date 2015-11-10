@@ -8,7 +8,7 @@ namespace AI_Assignment_2
 {
     class ReproductionMethod
     {
-        public enum Methods { Asexual, Mate };
+        public enum Methods { Asexual, Mate, Split };
         private Methods method;
 
         public ReproductionMethod(Methods method)

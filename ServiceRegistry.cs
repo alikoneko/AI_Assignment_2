@@ -12,12 +12,14 @@ namespace AI_Assignment_2
         private Random random;
         private Logger log;
         private ReproductionMethod reproductionMethod;
+        private CSVOutputter csv;
 
         public ServiceRegistry()
         {
             random = new Random();
             log = new Logger();
-            reproductionMethod = new ReproductionMethod(ReproductionMethod.Methods.Mate);
+            reproductionMethod = new ReproductionMethod(ReproductionMethod.Methods.Asexual);
+            csv = new CSVOutputter();
 
         }
         public static ServiceRegistry GetInstance()
@@ -42,6 +44,11 @@ namespace AI_Assignment_2
         public Logger GetLog()
         {
             return log;
+        }
+
+        public CSVOutputter GetCSV()
+        {
+            return csv;
         }
     }
 }

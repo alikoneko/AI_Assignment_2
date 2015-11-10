@@ -52,6 +52,23 @@ namespace AI_Assignment_2
             return newRoute;
         }
 
+        public Route Split(Route father)
+        {
+            int cutoff = 50;
+            int current = 0;
+            Route newRoute = new Route(cities);
+            newRoute.genotype = new Dictionary<City, double>();
+
+            foreach (City city in cities.Cities)
+            {
+                Route parent = (++current < cutoff) ? this : father;
+                newRoute.genotype.Add(city, parent.genotype[city]);
+            }
+
+            newRoute.ClearCache();
+
+            return newRoute;
+        }
 
         public Route Mutate()
         {

@@ -24,6 +24,7 @@ namespace AI_Assignment_2
         private Random random;
         private int generations;
         private Logger log;
+        private CSVOutputter csv;
 
 
         public SalesmanSolver(int population, int generations)
@@ -40,7 +41,7 @@ namespace AI_Assignment_2
         {
             random = ServiceRegistry.GetInstance().GetRandom();
             log = ServiceRegistry.GetInstance().GetLog();
-            
+            csv = ServiceRegistry.GetInstance().GetCSV();
         }
 
         private void GeneratePopulation()
@@ -75,16 +76,21 @@ namespace AI_Assignment_2
 
             while (newRoutes.Count < populationSize)
             {
+                Route parent1, parent2;
                 switch (ServiceRegistry.GetInstance().GetReproductionMethod())
                 {
                     case ReproductionMethod.Methods.Asexual:
                         newRoutes.Add(routes[random.Next(routes.Count)].Mutate());
                         break;
                     case ReproductionMethod.Methods.Mate:
-                        Route parent1 = routes[random.Next(routes.Count)];
-                        Route parent2 = routes[random.Next(routes.Count)];;
-                        Route child1 = parent1.Mate(parent2);
-                        newRoutes.Add(child1);
+                        parent1 = routes[random.Next(routes.Count)];
+                        parent2 = routes[random.Next(routes.Count)];
+                        newRoutes.Add(parent1.Mate(parent2));
+                        break;
+                    case ReproductionMethod.Methods.Split:
+                        parent1 = routes[random.Next(routes.Count)];
+                        parent2 = routes[random.Next(routes.Count)];
+                        newRoutes.Add(parent1.Split(parent2));
                         break;
                     default:
                         throw new NotImplementedException("ReproductionMethod " + ServiceRegistry.GetInstance().GetReproductionMethod() + " not implemented");
@@ -107,9 +113,10 @@ namespace AI_Assignment_2
                 Repopulate();
 
             }
-
+            
             log.Log("Final Best: " + routes[0].DistanceTraveled);
-            //log.Log(routes[0].ToString());
+            csv.ToCSV(routes[0].DistanceTraveled.ToString());
+            //csv.ToCSV(routes[0].ToString());
 
         }
         public override string ToString()
