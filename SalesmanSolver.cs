@@ -92,6 +92,11 @@ namespace AI_Assignment_2
                         parent2 = routes[random.Next(routes.Count)];
                         newRoutes.Add(parent1.Split(parent2));
                         break;
+                    case ReproductionMethod.Methods.CombinationMateWithMutation:
+                        parent1 = routes[random.Next(routes.Count)];
+                        parent2 = routes[random.Next(routes.Count)];
+                        newRoutes.Add(parent1.Mate(parent2).Mutate());
+                        break;
                     default:
                         throw new NotImplementedException("ReproductionMethod " + ServiceRegistry.GetInstance().GetReproductionMethod() + " not implemented");
                 }

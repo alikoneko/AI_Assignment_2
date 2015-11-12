@@ -18,7 +18,7 @@ namespace AI_Assignment_2
         {
             random = new Random();
             log = new Logger();
-            reproductionMethod = new ReproductionMethod(ReproductionMethod.Methods.Asexual);
+            reproductionMethod = new ReproductionMethod(ReproductionMethod.Methods.CombinationMateWithMutation);
             csv = new CSVOutputter();
 
         }
